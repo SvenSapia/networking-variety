@@ -1,6 +1,21 @@
 #!/bin/bash
 clear
 
+# Snippet found at https://stackoverflow.com/questions/13777387/check-for-ip-validity
+ipvalid() {
+	# Set up local variables
+	local ip=${1:-1.2.3.4}
+	local IFS=.; local -a a=($ip)
+	# Start with a regex format test
+	[[ $ip =~ ^[0-9]+(\.[0-9]+){3}$ ]] || return 1
+	# Test values of quads
+	local quad
+	for quad in {0..3}; do
+	  [[ "${a[$quad]}" -gt 255 ]] && return 1
+	done
+	return 0
+}
+
 # Parse config.json
 default_username=$(cat './config.json' | jq -r '.default.username')
 default_sshkey=$(cat './config.json' | jq -r '.default.sshkey')
@@ -31,7 +46,14 @@ printf "\n\n\n"
 
 ### Show IPs
 echo "IPs to connect:"
-readarray -t switchlist <<< "$(cat './config.json' | jq -r '.switch.'$switchfamily'.'$switchmodel.ips' | values[]')"
+readarray -t switchlistRaw <<< "$(cat './config.json' | jq -r '.switch.'$switchfamily'.'$switchmodel.ips' | values[]')"
+#Validate IP-Adress
+for switchRaw in ${switchlistRaw[*]};
+do
+	if ipvalid $switchRaw; then
+		switchlist+=( "$switchRaw" )
+	fi
+done
 echo ${switchlist[*]}
 printf "\n\n\n"
 
@@ -127,6 +149,8 @@ sshkey=${sshkey:-$defaultargv}
 # Open device list & send the collected information to expect script
 for switch in ${switchlist[*]}; 
 do
-	./expectpush.sh $switch $user $password $enablepwd $sshkey "${cmdlist[@]}";
+	if ipvalid $switch; then
+		./expectpush.sh $switch $user $password $enablepwd $sshkey "${cmdlist[@]}";
+	fi
 done
 printf "\n\n\n"
