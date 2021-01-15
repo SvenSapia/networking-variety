@@ -149,8 +149,6 @@ sshkey=${sshkey:-$defaultargv}
 # Open device list & send the collected information to expect script
 for switch in ${switchlist[*]}; 
 do
-	if ipvalid $switch; then
-		./expectpush.sh $switch $user $password $enablepwd $sshkey "${cmdlist[@]}";
-	fi
+	./expectpush.sh $switch $user $password $enablepwd $sshkey "${cmdlist[@]}";
 done
 printf "\n\n\n"
