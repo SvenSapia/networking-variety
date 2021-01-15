@@ -8,7 +8,7 @@ This script allows access switches (slaves) to join an existing vtp domain.
 
 **Note:** Before using this script, a vtp domain on a core switch has to be available.
 
-**info:** If you would like to remove switches from an exisiting or previously defined vtp domain, you may use the vtp transparent function [./vtpTransparent.sh]
+**info:** If you would like to remove switches from an exisiting or previously defined vtp domain, you may use the vtp transparent script ./vtpTransparent.sh
 
 **Important:** VTP's may cause failures and loop if not implemented correctly.
 
