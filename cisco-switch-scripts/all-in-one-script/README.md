@@ -8,3 +8,6 @@
 * cleanup script
 * validate userinput
 * multiple userinput (e.g. more than one model at a time)
+
+# ToDo ping_all.sh
+* switchid to ip
